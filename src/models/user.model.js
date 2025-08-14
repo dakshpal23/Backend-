@@ -36,30 +36,32 @@ const UserSchema = new Schema({
         type: String,
         required: [true, 'Password is required'],
     },
+    refreshToken: {
+        type: String,
+    },
     watchHistory: [
         {
             type:Schema.Types.ObjectId,
             ref: "Video"
         }
     ],
-    refer
     
 },{timestamps: true})
 
 UserSchema.pre("save", async function (next) {
     if(!this.ismodified("password")) return next()      // Agar password mei koi change nhi hua to password encryption change na kro
 
-    this.password = bcrypt.hash(this.password, 10)      // password field ko encrypyt krdega
+    this.password = await bcrypt.hash(this.password, 10)      // password field ko encrypyt krdega
     next();
 })
 
 
-UserSchema.methods.ispasswordCorrect(async function (password) {
+UserSchema.methods.isPasswordCorrect = (async function (password) {
     return await bcrypt.compare(password, this.password)        // Password check kr rha shi hai ya nhi
 })
 
 
-UserSchema.methods.generateAccessToken(async function () {
+UserSchema.methods.generateAccessToken = (async function () {
     jwt.sign(
         {
             _id: this._id,
@@ -75,7 +77,7 @@ UserSchema.methods.generateAccessToken(async function () {
     )
 })
 
-UserSchema.methods.generateRefreshToken(async function () {
+UserSchema.methods.generateRefreshToken = (async function () {
     jwt.sign(
         {
             _id: this._id,
