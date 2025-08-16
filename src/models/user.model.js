@@ -49,7 +49,7 @@ const UserSchema = new Schema({
 },{timestamps: true})
 
 UserSchema.pre("save", async function (next) {
-    if(!this.ismodified("password")) return next()      // Agar password mei koi change nhi hua to password encryption change na kro
+    if(!this.isModified("password")) return next()      // Agar password mei koi change nhi hua to password encryption change na kro
 
     this.password = await bcrypt.hash(this.password, 10)      // password field ko encrypyt krdega
     next();
